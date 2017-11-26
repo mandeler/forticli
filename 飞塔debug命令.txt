@@ -1,0 +1,24 @@
+#开始
+diagnose debug flow filter saddr ？
+diagnose debug flow show console enable
+diagnose debug enable 
+diagnose debug flow trace start 100
+
+#关闭flow trace
+diagnose debug flow trace stop 
+
+#关闭diagnose debug
+diagnose debug disable
+
+#查看pptp debug
+diagnose debug enable 
+diagnose debug application ppp -1
+di debug application ppp 0
+
+#ldap对接的Debug
+FGT# diagnose debug enable
+FGT# diagnose debug application fnbamd 255
+#以下命令关闭
+FGT# diagnose debug application fnbamd 0
+#测试ldap用户登录
+FGT# diagnose test authserver ldap Vlad-AD administrator 12345678

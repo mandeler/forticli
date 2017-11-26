@@ -1,0 +1,15 @@
+config wireless-controller vap
+    edit "wifi"
+        set vdom "root"
+        set ssid "broadview_forti"
+        set schedule "always"
+        set passphrase password
+    next
+end
+如果只是做无线用，需要配合其他的路由设备，把DHCP关掉
+config system dhcp server 
+	edit 1
+		set status disable
+	next
+end
+		

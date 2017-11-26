@@ -1,0 +1,46 @@
+FortiWIFI_50E (server) # show full-configuration 
+config system dhcp server
+    edit 1
+        set status enable
+        set lease-time 604800
+        set mac-acl-default-action assign
+        set forticlient-on-net-status enable
+        set dns-service default
+        set wifi-ac1 0.0.0.0
+        set wifi-ac2 0.0.0.0
+        set wifi-ac3 0.0.0.0
+        set ntp-service specify
+        set domain ''
+        set wins-server1 0.0.0.0
+        set wins-server2 0.0.0.0
+        set default-gateway 192.168.3.1
+        set next-server 0.0.0.0
+        set netmask 255.255.255.0
+        set interface "lan1"
+        config ip-range
+            edit 1
+                set start-ip 192.168.3.50
+                set end-ip 192.168.3.100
+            next
+        end
+        set timezone-option default
+        set tftp-server ''
+        set filename ''
+        set server-type regular
+        set conflicted-ip-timeout 1800
+        set auto-configuration enable
+        set ddns-update disable
+        set vci-match disable
+        config reserved-address
+            edit 1
+                set ip 192.168.3.50
+                set mac ac:9e:17:f0:19:fd
+                set action reserved
+                set description ''
+            next
+        end
+        set ntp-server1 0.0.0.0
+        set ntp-server2 0.0.0.0
+        set ntp-server3 0.0.0.0
+    next
+end

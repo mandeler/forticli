@@ -1,0 +1,47 @@
+配置pptp/l2tp
+1.配置用户，用户组
+config user local
+  edit username
+   set status enable
+   set type password
+   set passwd 123
+  next
+  edit blabla....
+end
+
+config user group
+  edit grpname
+  set member username
+  next
+  edit blabla...
+end
+2.配置pptp/l2tp vpn（需要在命令行下面配置）
+config vpn pptp
+  set status enable
+  set sip startip-pool
+  set eip endip-pool
+  set usrgrp grpname
+  end
+3.配置策略
+3.1配置地址对象
+config firewall address 
+  edit pptp_l2tp_agroup
+   set type iprange
+   set start-ip sip
+   set end-ip eip
+   set comment "for pptp and l2tp"
+   set visibility enable 
+  next
+end
+3.2新建防火墙策略
+config firewall policy
+    set srcintf "port1"
+    set dstintf "port2"
+    set srcaddr "pptp_l2tp_agroup"
+    set dstaddr "all"
+    set action accept
+    set schedule "always"
+    set service "ALL"
+    set comments "pptp_internal"
+  next
+end

@@ -1,0 +1,5 @@
+#查看dhcp分配
+exe dhcp lease-list 
+
+#查看arp表
+get system arp

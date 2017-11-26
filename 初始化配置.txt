@@ -1,0 +1,15 @@
+#≈‰÷√GUI”Ô—‘
+config system global
+    set alias "FWF50E3U16000085"
+    set fgd-alert-subscription advisory latest-threat
+    set hostname "FortiWIFI_50E"
+    set language simch
+    set switch-controller enable
+    set timezone 55
+end
+#≈‰÷√DNS
+config system dns
+    set primary 208.91.112.53
+    set secondary 208.91.112.52
+end
+#

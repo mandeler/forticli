@@ -1,0 +1,13 @@
+config user ldap
+    edit "ad01"
+        set server "ad01"
+        set secondary-server "ad02"
+        set source-ip 192.168.1.99
+        set cnid "cn"
+        set dn "DC=contoso,DC=com"
+        set type regular
+        set username "cn=administrators,cn=users,DC=contoso,DC=com"
+        set password ENC bDEOC1OIle9uqso8OUjhi5lY1VEyypSxqcV2Nt/HZG6zSwBfQcunaXWMwsSsE/+9pXYOaZ+l3v31bPFqjiQbgedm6JMassDQYHoNaHUSMKQz6xG4nvYzbdbGAweiTKIeyPdnzgD9fYZH70kOM0YmCzPbkTMDdGe94N62EvhZYKrsF4RTN0pCNvLzbaxnaCuoBDD1GA==
+        set search-type nested
+    next
+end
