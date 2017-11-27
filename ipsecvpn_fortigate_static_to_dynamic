@@ -1,0 +1,60 @@
+# 总部，静态IP地址，配置如下
+config vpn ipsec phase1-interface
+edit line1_p1
+ set type dynamic
+ set peer-type any
+ set add-route enable
+ 
+ set interface port1
+ set ip-version 4
+ set ike-version 2
+ set local-gw 192.168.122.10
+ set authmethod psk
+ set psksecret 123456
+ set dhgrp 2 5 14
+ set dpd on-demand
+ set proposal des-md5 des-sha256 
+
+ set distance 10
+ set priority 100
+ 
+config vpn ipsec phase2-interface
+edit line1_p2
+ set phase1name line1_p1
+ set proposal des-md5 des-sha256
+ set dhgrp 2 5 14
+ set keealive disable
+
+
+config route static
+ set dst 10.0.2.0/24
+ set device line1_p1
+ set m
+# 分支，动态IP地址，配置如下
+config vpn ipsec phase1-interface
+edit line1_p1
+ set type static
+ set peer-type any
+ set remote-gw 192.168.122.10
+
+ set interface port1
+ set ip-version 4
+ set ike-version 2
+ set authmethod psk
+ set psksecret 123456
+ set dhgrp 2 5 14
+ set dpd on-demand
+ set proposal des-md5 des-sha256 
+
+config vpn ipsec phase2-interface
+edit line1_p2
+ set phase1name line1_p1
+ set proposal des-md5 des-sha256
+ set dhgrp 2 5 14
+ set auto-negotiate enable
+ set src-addr-type subnet
+ set src-subnet  10.0.2.0/24
+ set dst-addr-type subnet 
+ set dst-subnet 10.0.1.0/24
+ set keepalive enable
+ 
