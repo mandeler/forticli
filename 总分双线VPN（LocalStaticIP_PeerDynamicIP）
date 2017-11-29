@@ -1,0 +1,163 @@
+##HQ总部固定IP地址的设备配置
+fgt546 # show vpn ipsec phase1-interface 
+config vpn ipsec phase1-interface
+    edit "line1_p1"
+        set type dynamic
+        set interface "port1"
+        set local-gw 192.168.122.10
+        set peertype any
+        set proposal des-md5 des-sha256
+        set dhgrp 14 5 2
+        set psksecret ENC koTDBsSnzta9c1s2Gu1VhWK5Uaao0Jqx6+YDz7sMhSpZ5xEuqIkYslWNtTfY7HYCptzr7YJ5N0Hht/raGXvHqG2NEuI78RaE9KjgDZafA3F8pDdKaNKi/19IhuKVQElmEsbKP5C283/vXE+kmiTCEhuAlLGJXfhJda8ty3kr4T3MUbjk7hN+eJp5HdkSqgX7zDaR0w==
+        set distance 1
+    next
+    edit "line2_p1"
+        set type dynamic
+        set interface "port2"
+        set local-gw 192.168.123.10
+        set peertype any
+        set proposal des-sha256 des-md5
+        set dhgrp 2 5 14
+        set psksecret ENC SkBi6RTY3yod6Qf3YzOMFqLblwischaM9mxEokz64jS8KBwtJYBwo8yeELf3Nu4MVmoQWosSvj/xXIS8k6Jdw82Km0DYnKEvkFLDZtxHuNAQ4gdSDHgouHxoXmGMiw2D9xhvctPU/dDPZljKkHRBin6/Wp7cjiYsuMUqYpzio4nSi/CQHEjuA+IeGNyWblDFNGArhg==
+        set distance 3
+    next
+end
+
+fgt546 # show vpn ipsec phase2-interface
+config vpn ipsec phase2-interface
+    edit "line1_p2"
+        set phase1name "line1_p1"
+        set proposal des-md5 des-sha256
+        set dhgrp 2 5 14
+        set keepalive enable
+        set add-route enable
+        set src-subnet 10.0.1.0 255.255.255.0
+        set dst-subnet 10.0.2.0 255.255.255.0
+    next
+    edit "line2_p2"
+        set phase1name "line2_p1"
+        set proposal des-md5 des-sha256
+        set dhgrp 2 5 14
+        set keepalive enable
+        set add-route enable
+        set src-subnet 10.0.1.0 255.255.255.0
+        set dst-subnet 10.0.2.0 255.255.255.0
+    next
+end
+
+fgt546 # show firewall policy 
+config firewall policy
+    edit 1
+        set name "vpnpeer_to_local"
+        set uuid 963aa56c-d4aa-51e7-8cbb-6ab066be9dea
+        set srcintf "ipsec_local"
+        set dstintf "port3"
+        set srcaddr "all"
+        set dstaddr "local_subnet"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+    next
+    edit 2
+        set name "local_to_vpnpeer"
+        set uuid c2cec054-d4aa-51e7-0336-7f1c3183c03f
+        set srcintf "port3"
+        set dstintf "ipsec_local"
+        set srcaddr "local_subnet"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+    next
+end
+
+##远程站点公网Dynamic地址的配置
+fgt546-b # show vpn ipsec phase1-interface 
+config vpn ipsec phase1-interface
+    edit "line1_p1"
+        set interface "port1"
+        set peertype any
+        set proposal des-md5 des-sha256
+        set dhgrp 2 5 14
+        set remote-gw 192.168.122.10
+        set psksecret ENC j0YD0gpTXxy9n334z8MbQW68h6zuZbycR/YTX6cEcprWhdcApop3000ILdAtKEIgfavGRmXEYO1IlCeAJhk2T26JTSumA7nmJmUTizGlxzHYtqPILbqPnfi/THTJ7nf0UkPUi0vqwTqvtjBnM9NhDVqjt3JKPZCFWa9Ow0j0rEFYECzsk97kdsXvkDHRLlSbbLFpbQ==
+    next
+    edit "line2_p1"
+        set interface "port2"
+        set peertype any
+        set proposal des-md5 des-sha256
+        set dhgrp 2 5 14
+        set remote-gw 192.168.123.10
+        set psksecret ENC xC9RQ3b4HmYRwc1WZlVv3AR6XZh+cy1s6sVUeGk24OnBSvD4NqCLaI7wagesDxkz71CFkY5yKRMeMD7V2OS54MRHUcdAr3jQ8Mm9v617kE/K0O7Zh9qijO2pV+qPav4LYrRnroj9uKSCg6zcNz3doihwDWZO+rtLt8a+FIgB0P2neZWOo8oh8N+Gwt3BsAaD6Q1PqA==
+    next
+end
+
+fgt546-b # show vpn ipsec phase2-interface
+config vpn ipsec phase2-interface
+    edit "line1_p2"
+        set phase1name "line1_p1"
+        set proposal des-md5 des-sha256
+        set dhgrp 2 5 14
+        set auto-negotiate enable
+        set src-subnet 10.0.2.0 255.255.255.0
+        set dst-subnet 10.0.1.0 255.255.255.0
+    next
+    edit "line2_p2"
+        set phase1name "line2_p1"
+        set proposal des-md5 des-sha256
+        set dhgrp 2 5 14
+        set auto-negotiate enable
+        set src-subnet 10.0.2.0 255.255.255.0
+        set dst-subnet 10.0.1.0 255.255.255.0
+    next
+end
+
+fgt546-b # show router static 
+config router static
+    edit 1
+        set gateway 192.168.122.1
+        set device "port1"
+    next
+    edit 2
+        set dst 10.0.1.0 255.255.255.0
+        set distance 1
+        set device "line1_p1"
+    next
+    edit 3
+        set dst 10.0.1.0 255.255.255.0
+        set distance 3
+        set device "line2_p1"
+    next
+end
+
+fgt546-b # show firewall policy 
+config firewall policy
+    edit 1
+        set name "vpnpeer_to_local"
+        set uuid f93fce8a-d4aa-51e7-7e9b-a17e7f0bf329
+        set srcintf "ipsec_local"
+        set dstintf "port3"
+        set srcaddr "all"
+        set dstaddr "local_subnet"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+    next
+    edit 2
+        set name "local_to_vpnpeer"
+        set uuid 14456c44-d4ab-51e7-2ed8-045163b9a155
+        set srcintf "port3"
+        set dstintf "ipsec_local"
+        set srcaddr "local_subnet"
+        set dstaddr "all"
+        set action accept
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+    next
+end
+
+
