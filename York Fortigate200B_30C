@@ -1,0 +1,40 @@
+!总部防火墙操作
+!先查看现有配置及保存
+show firewall policy _polid_
+!此处粘贴上述命令看到的相关策略
+show vpn ipsec phase1
+!此处粘贴现有的phase1配置
+show vpn ipsec phase2
+!此处粘贴现有的phase2配置
+!删除原有防火墙策略
+config firewall policy
+	delete _polid_
+end
+!更改phase2调用的phase1名称，以便接下来可以改动phase1的接口
+config vpn ipsec phase2
+	edit _phase2_name_
+		set phase1name _another_phase1name_
+end
+!配置phase1的接口以及新的本地IP
+config vpn ipsec phase1 
+  edit _phase1_name_
+    set interface _port15_
+    set local-gw 120.195.161.126
+end
+!改回phase2调用的phase1
+config vpn ipsev phase2
+  edit _phase2_name_
+    set phase1name _phase1_name_
+end
+!重新配置防火墙策略
+!此处修改并粘贴相应的防火墙策略，其中，dstintf 改成 port15（本次配置移动端口为port15）
+
+
+!分支防火墙操作
+show vpn ipsec phase1
+!修改VPN对端为总部移动的IP地址即可
+config vpn ipsec phase1
+  edit _phase1_name_
+  set remote-gw 120.195.161.126
+end
+
