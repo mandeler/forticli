@@ -1,5 +1,8 @@
 #查看dhcp分配
-exe dhcp lease-list 
+execute dhcp lease-list 
 
 #查看arp表
 get system arp
+
+#查看路由表
+get router info routing-table  all

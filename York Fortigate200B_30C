@@ -28,6 +28,9 @@ config vpn ipsev phase2
 end
 !重新配置防火墙策略
 !此处修改并粘贴相应的防火墙策略，其中，dstintf 改成 port15（本次配置移动端口为port15）
+config firewall policy
+  edit _polid_
+
 
 
 !分支防火墙操作
