@@ -1,0 +1,8 @@
+1.
+用户名：maintainer
+密码：bcpb<序列号>，序列号字母全部是大写
+
+可以关闭maintainer帐号
+config sys global
+set admin-sys maintainer
+end

@@ -1,0 +1,6 @@
+config system ha 
+  set ha-direct enable
+  #以下在做好HA的时候，配置带外管理，同时给带外管理口配置网关，后面FotriGuard的升级通过带外管理口进行，不再使用数据口
+  set ha-mgmt-status enable    
+  set ha-mgmt-interface itf_name
+  set ha-mgmt-interface-gateway x.x.x.x

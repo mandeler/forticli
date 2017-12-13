@@ -1,0 +1,30 @@
+1.session-helper   也叫 ALG application layer gateway
+作用举例：在DNAT的环境下，比如SIP只开了一个端口出去，当外部服务器主动发送包的时候，防火墙session-helper会打开需要的其他端口。
+2.session ttl
+会话时长适当降低，可以提高设备性能，但是不能太低，防止造成一些正常会话的中断
+ config system session-ttl
+  set default 3600
+ end
+3.测试ldap
+ di test authserver ldap args
+HAHAHAHAHAHAHA
+4.清空运行时间，用于HA选举中选择主，下面命令在standby上面运行
+ di sys ha reset-uptime
+monitor ports -- uptime -- priority -- SN
+5.HA过程中的几个注意事项
+ # 主机的priority配置高一些
+ # 不用的端口，没必要勾选很多HA Monitor端口，防止因为误接网线导致主备切换
+ # 
+6.备机没有带外管理口的时候，可以从一台设备进去，通过下面命令登录到另外一台
+ execute ha manage ?
+7.配置异步路由
+config system settings
+  set asymroute enable
+8.配置允许多接口同网段
+config system settings
+  set allow-subnet-overlap enable
+9.配置调制解调器modem
+config system modem
+  set status enale
+10.
+

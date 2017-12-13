@@ -3,9 +3,30 @@ execute dhcp lease-list
 
 #查看arp表
 get system arp
-
+diag ip arp list
 #查看路由表
 get router info routing-table  all
 
 #发送alert-mail
- di log alertmail test
+diag log alertmail test
+
+#查看会话状态，尤其关注session-count
+di sys session stat
+
+#配置允许多接口同网段
+config system settings
+  set allow-subnet-overlap enable
+
+#查看物理设备状态
+get hardware nic
+get system interface transceiver
+get system performance status
+dia sys top/top-summary
+
+####DEBUG流程####
+dia de flow show console enable
+dia debug flow filter <filter>
+dia debug enable
+dia debug flow trace start xxx(条目数)
+最后关闭  di de dis       di debug reset
+
