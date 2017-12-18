@@ -50,7 +50,7 @@ config firewall policy
     edit 1
         set name "vpnpeer_to_local"
         set uuid 963aa56c-d4aa-51e7-8cbb-6ab066be9dea
-        set srcintf "ipsec_local"
+        set srcintf "ipsec_local"(VPN phase1端口)
         set dstintf "port3"
         set srcaddr "all"
         set dstaddr "local_subnet"

@@ -1,0 +1,48 @@
+批处理导入配置脚本，需要格式为“UTF-8无BOM格式编码”
+TIPS：刷配置，不要在console里面，9600波特率限制了传输速率，防止卡死
+
+#查看dhcp分配
+execute dhcp lease-list 
+
+#查看arp表
+get system arp
+diag ip arp list
+#查看路由表
+get router info routing-table  all
+
+#抓包
+diag sniffer packet [interface/any] 'host 192.168.1.254 and icmp'  [1-6]
+ 
+#发送alert-mail
+diag log alertmail test
+
+#查看会话状态，尤其关注session-count
+di sys session stat
+
+#配置允许多接口同网段
+config system settings
+  set allow-subnet-overlap enable
+
+#查看物理设备状态
+get hardware nic
+get system interface transceiver
+get system performance status
+dia sys top/top-summary
+
+#设备自行检测
+di hardware test suite all
+
+#异常重启原因分析
+di de crashlog read
+
+####DEBUG流程####
+dia de flow show console enable
+dia debug flow filter <filter>
+dia debug enable
+dia debug flow trace start xxx(条目数)
+最后关闭  di de dis       di debug reset
+
+#查看策略路由表
+diag firewall proute list
+
+

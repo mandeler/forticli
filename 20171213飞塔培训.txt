@@ -1,0 +1,60 @@
+1.session-helper   也叫 ALG application layer gateway
+作用举例：在DNAT的环境下，比如SIP只开了一个端口出去，当外部服务器主动发送包的时候，防火墙session-helper会打开需要的其他端口。
+2.session ttl
+会话时长适当降低，可以提高设备性能，但是不能太低，防止造成一些正常会话的中断
+ config system session-ttl
+  set default 3600
+ end
+3.测试ldap
+ di test authserver ldap args
+HAHAHAHAHAHAHA
+4.清空运行时间，用于HA选举中选择主，下面命令在standby上面运行
+ di sys ha reset-uptime
+monitor ports -- uptime -- priority -- SN
+5.HA过程中的几个注意事项
+ # 主机的priority配置高一些
+ # 不用的端口，没必要勾选很多HA Monitor端口，防止因为误接网线导致主备切换
+ # 
+6.备机没有带外管理口的时候，可以从一台设备进去，通过下面命令登录到另外一台
+ execute ha manage ?
+7.配置异步路由
+config system settings
+  set asymroute enable
+8.配置允许多接口同网段
+config system settings
+  set allow-subnet-overlap enable
+9.配置调制解调器modem
+config system modem
+  set status enale
+
+
+Day2
+1.IPSecVPN
+1.1 NAT-T
+因为ESP不支持NAT,所以设备如果在NAT设备之后，需要开启NAT-T
+NAT穿透开启后，前端有NAT设备，ESP封装到UDP 4500 端口;
+如果MAT-T设置成Force模式，则不管前端有没有NAT设备，都封装成UDP 4500
+1.2 PFS（Perfect Forward Secrecy）
+强制使用DH，阶段2到期时，重新生成阶段2密钥；
+1.3 策略VPN和路由VPN 相比，后者灵活度更高
+
+Note！！飞塔防火墙策略路由只是提高路由优先级，同样的路由在路由表里面必须也存在才能生效。
+
+2.SSL VPN
+2.1模式
+web-only（web反向代理，rdp/cifs/http/https/ftp/vnc/citrix等），port-forward（需要java applet，应用指向java applet），tunnel（需要forticlient生成firtissl虚拟网卡）
+2.2需要给ssl-vpn的接口添加一条直连路由，人为up端口
+
+
+Day3
+1.RPF 反向路由检查
+LOOSE，检查路由表，但是对于构造的不存在的源，放行
+STRICT，检查路由表，对于构造的不存在的源，丢弃包
+config system settings
+  set strict-src-check en/dis
+end
+2.WAN链路负载均衡
+
+
+
+

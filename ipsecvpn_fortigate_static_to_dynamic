@@ -1,4 +1,5 @@
 # 总部，静态IP地址，配置如下
+# P1
 config vpn ipsec phase1-interface
 edit line1_p1
  set type dynamic
@@ -17,7 +18,7 @@ edit line1_p1
 
  set distance 10
  set priority 100
- 
+# P2
 config vpn ipsec phase2-interface
 edit line1_p2
  set phase1name line1_p1
@@ -25,11 +26,11 @@ edit line1_p2
  set dhgrp 2 5 14
  set keealive disable
 
-
+# Route
 config route static
  set dst 10.0.2.0/24
  set device line1_p1
- set m
+end
 # 分支，动态IP地址，配置如下
 config vpn ipsec phase1-interface
 edit line1_p1

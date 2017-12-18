@@ -1,4 +1,4 @@
-配置pptp/l2tp
+Fortigate pptp/l2tp
 1.配置用户，用户组
 config user local
   edit username

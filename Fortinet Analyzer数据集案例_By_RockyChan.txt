@@ -1,0 +1,13 @@
+select app, sum(rcvd + sent) as bandwidth from $log where (`user`=(select coalesce(nullifna(`user`), `src`) as user_src from $log where $filter group by user_src having sum(sent+rcvd)>0 order by sum(rcvd + sent) desc limit 1 offset 0)) and $filter and app is not null group by app having sum(sent+rcvd)>0 order by bandwidth desc
+
+
+
+
+select app, sum(rcvdbyte + sentbyte) as bandwidth from $log where (`user`=(select coalesce(nullifna(`user`), ipstr(`srcip`)) as user_src from $log where $filter group by user_src having sum(sentbyte+rcvdbyte)>0 order by sum(rcvdbyte + sentbyte) desc limit 1 offset 0)) and $filter and app is not null group by app having sum(sentbyte+rcvdbyte)>0 order by bandwidth desc
+
+
+对于用户名没有，而是IP地址的用户而言
+select app, sum(rcvdbyte + sentbyte) as bandwidth from $log where (`user`=(select coalesce(nullifna(`user`), ipstr(`srcip`)) as user_src from $log where $filter group by user_src having sum(sentbyte+rcvdbyte)>0 order by sum(rcvdbyte + sentbyte) desc limit 1 offset 1)) or (ipstr(`srcip`)='(select coalesce(nullifna(`user`), ipstr(`srcip`)) as user_src from $log where $filter group by user_src having sum(sentbyte+rcvdbyte)>0 order by sum(rcvdbyte + sentbyte) desc limit 1 offset 1)') and $filter and app is not null group by app having sum(sentbyte+rcvdbyte)>0 order by bandwidth desc limit 10 offset 0
+
+TOP3
+select coalesce(nullifna(`user`), ipstr(`srcip`)) as user_src,app, sum(rcvdbyte + sentbyte) as bandwidth from $log where (`user`=(select coalesce(nullifna(`user`), ipstr(`srcip`)) as user_src from $log where $filter group by user_src having sum(sentbyte+rcvdbyte)>0 order by sum(rcvdbyte + sentbyte) desc limit 1 offset 2)) or (ipstr(`srcip`)='(select coalesce(nullifna(`user`), ipstr(`srcip`)) as user_src from $log where $filter group by user_src having sum(sentbyte+rcvdbyte)>0 order by sum(rcvdbyte + sentbyte) desc limit 1 offset 2)') and $filter and app is not null group by user_src,app having sum(sentbyte+rcvdbyte)>0 order by bandwidth desc limit 10 offset 0
