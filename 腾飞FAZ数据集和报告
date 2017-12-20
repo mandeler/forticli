@@ -1,0 +1,26 @@
+ASB_Suzhou_Dataset
+
+select coalesce(nullifna(`user`),ipstr(`srcip`)) as user_src,app,sum(rcvdbyte + sentbyte) as traffic from $log where $filter and app is not null group by user_src,app having sum(sentbyte+rcvdbyte)>0 order by traffic desc
+
+图表调用dig挖掘
+
+ASB_Suzhou_Single_User_Details
+
+select from_dtime(dtime) as Begin,duration as "duration(s)",User_src,IP_src,Destination,app,Traffic from ###(select dtime,duration,coalesce(nullifna(`user`),ipstr(`srcip`)) as User_src,ipstr(`srcip`) as IP_src,coalesce(hostname,ipstr(`dstip`)) as Destination,app,sum(sentbyte+rcvdbyte) as Traffic from $log where $filter and logid_to_int(logid) not in (4,7,14) and action in ('accept','close','timeout') group by  dtime,duration,User_src,srcip,Destination,app order by sum(sentbyte+rcvdbyte) desc)### t group by Begin,duration,User_src,IP_src,Destination,app,Traffic order by Traffic desc
+
+图表调用简单，不做排序，流量显示为KB/MB/GB
+
+
+以下是一开始的时候，手动写的按照用户排名的select语句，仅做参考
+select 
+from_itime(itime) as timestamp,
+coalesce(nullifna(`user`),nullifna(`unauthuser`),ipstr(`srcip`)) as user_src,
+sum(coalesce(`rcvdbyte`,0)+coalesce(`sentbyte`,0)) as bandwidth,
+    (select app from $log where coalesce(nullifna(`user`),nullifna(`unauthuser`),ipstr(`srcip`))=user_src group by app order by sum(coalesce(`rcvdbyte`,0)+coalesce(`sentbyte`,0)) desc limit 1 offset 0) as app01,
+   (select sum(coalesce(`rcvdbyte`,0)+coalesce(`sentbyte`,0)) from $log where coalesce(nullifna(`user`),nullifna(`unauthuser`),ipst(`srcip`))=user_src group by app order by sum(coalesce(`rcvdbyte`,0)+coalesce(`sentbyte`,0)) desc limit 1 offset 0) as bandwidth01,
+   (select sum(coalesce(`rcvdbyte`,0)) from $log where coalesce(nullifna(`user`),nullifna(`unauthuser`),ipstr(`srcip`))=user_src group by app order by sum(coalesce(`rcvdbyte`,0)+coalesce(`sentbyte`,0)) desc limit 1 offset 0) as inbound01,
+    (select sum(coalesce(`sentbyte`,0)) from $log where coalesce(nullifna(`user`),nullifna(`unauthuser`),ipstr(`srcip`))=user_src group by app order by sum(coalesce(`rcvdbyte`,0)+coalesce(`sentbyte`,0)) desc limit 1 offset 0) as outbound01
+(......此处省略app02,bandwidth02,inbound02,outbound02----05,总共五个排名)
+from $log 
+group by user_src order by bandwidth desc
+
