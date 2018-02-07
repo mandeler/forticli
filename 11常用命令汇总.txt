@@ -1,6 +1,7 @@
 批处理导入配置脚本，需要格式为“UTF-8无BOM格式编码”
 TIPS：刷配置，不要在console里面，9600波特率限制了传输速率，防止卡死
-
+##关闭NPU加速
+set auto-asic-offload disable
 #查看dhcp分配
 execute dhcp lease-list 
 

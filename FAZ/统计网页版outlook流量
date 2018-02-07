@@ -1,0 +1,2 @@
+select user_src,website,sum(traffic) as traffic from ###(select coalesce(nullifna(`user`), nullifna(`unauthuser`), ipstr(`srcip`)) as user_src,ipstr(`srcip`) as src_ip, hostname as website, sum(coalesce(sentbyte, 0)+coalesce(rcvdbyte, 0)) as traffic from $log-traffic where hostname similar to '%(office|office365|outlook)%'and app in ('Microsoft.Outlook','Microsoft.Office.Online','Microsoft.Office.365.Portal','Microsoft.Portal','Microsoft.Outlook_Attachment',
+

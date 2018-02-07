@@ -26,7 +26,10 @@ config system settings
 9.配置调制解调器modem
 config system modem
   set status enale
-
+10.更改fortiguard源IP地址
+[对开启vDOM的] config global
+config system fortiguard
+  set source-ip x.x.x.x
 
 Day2
 1.IPSecVPN

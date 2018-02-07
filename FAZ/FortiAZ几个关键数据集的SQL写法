@@ -1,0 +1,18 @@
+date=2017-11-26      日期
+time=11:31:07        时间
+user=""              用户
+app=                 应用
+srcip=10.2.0.117     源IP
+dstip=               目的IP
+dstport=135          目的Port
+transport=policyid   Polid
+
+1. bandwidth-app-Top-Policies-By-Bandwidth-Sessions
+policyid | bandwidth
+select coalesce(cast(policyid as text)) as polid, sum(coalesce(rcvdbyte, 0) + coalesce(sentbyte, 0)) as bandwidth, sum(coalesce(rcvdbyte, 0)) as traffic_in, sum(coalesce(sentbyte, 0)) as traffic_out, count(*) as sessions from $log where $filter and logid_to_int(logid) not in (4, 7, 14) group by polid order by bandwidth desc
+2. web-Top-User-Visted-Websites-by-Bandwidth
+website | catdesc | bandwidth
+select website, catdesc, sum(bandwidth) as bandwidth from ###(select hostname as website, catdesc, sum(coalesce(sentbyte, 0)+coalesce(rcvdbyte, 0)) as bandwidth from $log-traffic where $filter and hostname is not null and logid_to_int(logid) not in (4, 7, 14) and (countweb>0 or ((logver is null or logver<52) and (hostname is not null or utmevent in ('webfilter', 'banned-word', 'web-content', 'command-block', 'script-filter')))) group by hostname, catdesc having sum(coalesce(sentbyte, 0)+coalesce(rcvdbyte, 0))>0 order by bandwidth desc)### t group by website, catdesc order by bandwidth desc
+3. sql_app_top_500_allow_by_bandwidth
+timestamp | user_src | appcat | app | dst | bandwidth
+select from_itime(itime) as timestamp, coalesce(nullifna(`user`), nullifna(`unauthuser`), ipstr(`srcip`)) as user_src, appcat, app, coalesce(root_domain(hostname), ipstr(dstip)) as destination, sum(coalesce(`sentbyte`, 0)+coalesce(`rcvdbyte`, 0)) as bandwidth from $log where $filter and logid_to_int(logid) not in (4, 7, 14) and action in ('accept', 'close', 'timeout') group by timestamp, user_src, appcat, app, destination order by bandwidth desc
