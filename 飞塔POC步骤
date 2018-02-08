@@ -1,0 +1,34 @@
+####第一步先刷版本
+####很重要！！！清除上一次测试的日志。格盘刷版本之后不会清空日志盘
+execute formatlogdisk
+### 接下来的步骤，是要确保各项日志全部开启(以下命令来自5.2.x，对于5.4以及5.6版本，可能有部分命令没有，?补全查看一下，将日志全部开启就好)
+###For AntiVirus
+config antivirus settings
+ set default-db normal
+ end
+config antivirus profile
+ edit AV-flow
+ set extended-utm-log enable
+ config smb
+ set options scan
+ end
+ set av-virus-log enable
+ set av-block-log enable
+ end
+###For Application Sensor
+config application list
+ edit “default”
+ set extended-utm-log enable
+ set other-application-log enable
+ set log enable
+ set unknown-application-log enable
+ end
+###For WebFilter
+config webfilter profile
+ edit web-filter-flow
+ set extended-utm-log enable
+ set options https-url-scan
+ end
+
+
+
